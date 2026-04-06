@@ -1,0 +1,21 @@
+{
+	"name": "AzureDataFactory25032026",
+	"properties": {
+		"globalParameters": {
+			"logic_app_outloook_email_url": {
+				"type": "string",
+				"value": "https://prod-05.northcentralus.logic.azure.com:443/workflows/bcbbda67b8e84722b263b16e3d0dc102/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=TyUn4LNsYaGhB8RC3eHwubN5EiEGv24RaKgc-d7rRhs"
+			},
+			"logicappoutlookemailurlkeyvault": {
+				"type": "string",
+				"value": "https://azurekeyvault5476.vault.azure.net/secrets/outlooklogicappemailnotification/00be0005fb7c4fd3bfd8ebbac6c79b85?api-version=7.5"
+			}
+		}
+	},
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "99f0b26b-ac3e-4e64-96f5-03a90d9f8855",
+		"tenantId": "6223f98d-8b58-4e9e-80d6-67d83eb2ab27"
+	}
+}

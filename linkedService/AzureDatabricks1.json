@@ -1,0 +1,28 @@
+{
+	"name": "AzureDatabricks1",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureDatabricks",
+		"typeProperties": {
+			"domain": "https://adb-7405616979794906.6.azuredatabricks.net",
+			"accessToken": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "AzureKeyVault_blob_keyVault_LS",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "adbToken"
+			},
+			"newClusterNodeType": "Standard_NC16as_T4_v3",
+			"newClusterNumOfWorker": "2:8",
+			"newClusterSparkEnvVars": {
+				"PYSPARK_PYTHON": "/databricks/python3/bin/python3"
+			},
+			"newClusterVersion": "18.1.x-gpu-ml-scala2.13",
+			"clusterOption": "Autoscaling",
+			"newClusterInitScripts": [],
+			"dataSecurityMode": "NONE"
+		}
+	}
+}

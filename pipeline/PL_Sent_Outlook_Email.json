@@ -1,0 +1,39 @@
+{
+	"name": "PL_Sent_Outlook_Email",
+	"properties": {
+		"activities": [
+			{
+				"name": "Web_Sent_Outlook_Email",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "POST",
+					"url": {
+						"value": "@pipeline().globalParameters.logicappoutlookemailurlkeyvault",
+						"type": "Expression"
+					},
+					"body": {
+						"to": "chnh99996@gmail.com",
+						"subject": "Test Hi Mail",
+						"body": "Hi This is Test Mail."
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://azurekeyvault5476.vault.azure.net/"
+					}
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2026-04-04T11:36:03Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

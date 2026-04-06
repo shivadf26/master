@@ -1,0 +1,133 @@
+{
+	"name": "PL_Blob_File_Arrival",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get_Blob_CSV_File_MetaData",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "BinaryForGenericFile",
+						"type": "DatasetReference",
+						"parameters": {
+							"pDirectory": {
+								"value": "@pipeline().parameters.pipFolderPath",
+								"type": "Expression"
+							},
+							"pFileName": {
+								"value": "@pipeline().parameters.pipFilename",
+								"type": "Expression"
+							},
+							"pContainerName": {
+								"value": "@pipeline().parameters.pipContainerName",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"size",
+						"exists"
+					],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "BinaryReadSettings"
+					}
+				}
+			},
+			{
+				"name": "If_File_Exist_Grt_1KB_Size",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Get_Blob_CSV_File_MetaData",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@and(activity('Get_Blob_CSV_File_MetaData').output.exists, greater(activity('Get_Blob_CSV_File_MetaData').output.size,1024))",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Failure_Mail",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"method": "POST",
+								"url": "https://prod-05.northcentralus.logic.azure.com:443/workflows/bcbbda67b8e84722b263b16e3d0dc102/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=TyUn4LNsYaGhB8RC3eHwubN5EiEGv24RaKgc-d7rRhs",
+								"body": {
+									"to": "chnh99996@gmail.com",
+									"subject": "Failure Mail",
+									"body": "Hi The new invalide file is uploded."
+								}
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Web_Exist_And_Size_Grt_1024",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"method": "POST",
+								"url": "https://prod-05.northcentralus.logic.azure.com:443/workflows/bcbbda67b8e84722b263b16e3d0dc102/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=TyUn4LNsYaGhB8RC3eHwubN5EiEGv24RaKgc-d7rRhs",
+								"body": {
+									"to": "chnh99996@gmail.com",
+									"subject": "Success Mail",
+									"body": "Hi A new csv file with size greater than 1 KB in uploaded"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"pipFilename": {
+				"type": "string"
+			},
+			"pipFolderPath": {
+				"type": "string"
+			},
+			"pipContainerName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2026-04-05T05:40:19Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

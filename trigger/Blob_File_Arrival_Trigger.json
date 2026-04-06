@@ -1,0 +1,30 @@
+{
+	"name": "Blob_File_Arrival_Trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "PL_Blob_File_Arrival",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"pipFilename": "@triggerBody().fileName",
+					"pipFolderPath": "@join(skip(split(triggerBody().folderPath, '/'), 1), '/')",
+					"pipContainerName": "@first(split(triggerBody().folderPath, '/'))"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/blobcontainer/blobs/input/",
+			"blobPathEndsWith": ".csv",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/22e449be-eb1e-405d-b2bb-4807d304557b/resourceGroups/azurestorageblobrs/providers/Microsoft.Storage/storageAccounts/azurestorageblob546",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}

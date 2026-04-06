@@ -1,0 +1,351 @@
+{
+	"name": "Child_pipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get_Metadata_List_Of_Files_Dynamically",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "BinaryGen2DataLake",
+						"type": "DatasetReference",
+						"parameters": {
+							"pFolderPath": {
+								"value": "@pipeline().parameters.pipFolderPath",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "BinaryReadSettings"
+					}
+				}
+			},
+			{
+				"name": "ForEach_FileType_File",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get_Metadata_List_Of_Files_Dynamically",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get_Metadata_List_Of_Files_Dynamically').output.childItems",
+						"type": "Expression"
+					},
+					"batchCount": 3,
+					"activities": [
+						{
+							"name": "Get_Metadata_File_Size",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "DelimitedText_Gen2",
+									"type": "DatasetReference",
+									"parameters": {
+										"pFolderPath": {
+											"value": "@pipeline().parameters.pipFolderPath",
+											"type": "Expression"
+										},
+										"pFileName": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [
+									"size"
+								],
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							}
+						},
+						{
+							"name": "If_File_Size_Grt_Zero",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Lookup_File_Execution_Log_For_Duplicate",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@and(\n    greater(activity('Get_Metadata_File_Size').output.size, 0),\n    equals(length(activity('Lookup_File_Execution_Log_For_Duplicate').output.value), 0)\n)",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "Stored_procedure_Logging_Validation_Failed",
+										"type": "SqlServerStoredProcedure",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"storedProcedureName": "[dbo].[sp_Log_FileExecution]",
+											"storedProcedureParameters": {
+												"ErrorMessage": {
+													"value": "'File is empty Or Duplicate Value' ",
+													"type": "String"
+												},
+												"FileName": {
+													"value": {
+														"value": "@item().name",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"FilePath": {
+													"value": {
+														"value": "@pipeline().parameters.pipFolderPath",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"Status": {
+													"value": "FAILED",
+													"type": "String"
+												}
+											}
+										},
+										"linkedServiceName": {
+											"referenceName": "AzureSqlDatabase_LinkedService_KeyVault_Ver1",
+											"type": "LinkedServiceReference"
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "Copy_Csv_To_Table",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "DelimitedTextSource",
+												"storeSettings": {
+													"type": "AzureBlobFSReadSettings",
+													"recursive": true,
+													"enablePartitionDiscovery": false
+												},
+												"formatSettings": {
+													"type": "DelimitedTextReadSettings"
+												}
+											},
+											"sink": {
+												"type": "AzureSqlSink",
+												"writeBehavior": "insert",
+												"sqlWriterUseTableLock": false,
+												"tableOption": "autoCreate",
+												"disableMetricsCollection": false
+											},
+											"enableStaging": false,
+											"translator": {
+												"type": "TabularTranslator",
+												"typeConversion": true,
+												"typeConversionSettings": {
+													"allowDataTruncation": true,
+													"treatBooleanAsNumber": false
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "DelimitedText_Gen2",
+												"type": "DatasetReference",
+												"parameters": {
+													"pFolderPath": {
+														"value": "@pipeline().parameters.pipFolderPath",
+														"type": "Expression"
+													},
+													"pFileName": {
+														"value": "@item().name",
+														"type": "Expression"
+													}
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "AzureSqlTable1",
+												"type": "DatasetReference",
+												"parameters": {
+													"pTableName": {
+														"value": "@pipeline().parameters.pipTargetTable",
+														"type": "Expression"
+													},
+													"pSchemaName": "dbo"
+												}
+											}
+										]
+									},
+									{
+										"name": "Stored_Procedure_To_Start_Log",
+										"type": "SqlServerStoredProcedure",
+										"dependsOn": [
+											{
+												"activity": "Copy_Csv_To_Table",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"storedProcedureName": "[dbo].[sp_Log_FileExecution]",
+											"storedProcedureParameters": {
+												"ErrorMessage": {
+													"value": null,
+													"type": "String"
+												},
+												"FileName": {
+													"value": {
+														"value": "@item().name",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"FilePath": {
+													"value": {
+														"value": "@pipeline().parameters.pipFolderPath",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"Status": {
+													"value": "SUCCESS",
+													"type": "String"
+												}
+											}
+										},
+										"linkedServiceName": {
+											"referenceName": "AzureSqlDatabase_LinkedService_KeyVault_Ver1",
+											"type": "LinkedServiceReference"
+										}
+									}
+								]
+							}
+						},
+						{
+							"name": "Lookup_File_Execution_Log_For_Duplicate",
+							"type": "Lookup",
+							"dependsOn": [
+								{
+									"activity": "Get_Metadata_File_Size",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "SELECT 1 \nFROM File_Execution_Log\nWHERE FileName = '@{item().name}'\nAND FilePath = '@{pipeline().parameters.pipFolderPath}'\nAND Status = 'SUCCESS'",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "AzureSqlTable1",
+									"type": "DatasetReference",
+									"parameters": {
+										"pTableName": "@null",
+										"pSchemaName": {
+											"value": "@null",
+											"type": "Expression"
+										}
+									}
+								},
+								"firstRowOnly": false
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"pipFolderPath": {
+				"type": "string"
+			},
+			"pipTargetTable": {
+				"type": "string"
+			},
+			"pipFileType": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2026-04-03T16:54:55Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
