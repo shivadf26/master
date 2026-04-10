@@ -1,0 +1,48 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "AzureDataFactory25032026"
+		},
+		"AzureDataLakeStorage_Gen2_accountKey": {
+			"value": ""
+		},
+		"AzureBlobStorage_Binary_Parametrize_properties_typeProperties_connectionString_secretName": {
+			"value": "BlobStorageconnectionStringkeyvault"
+		},
+		"AzureDataLakeStorage_Gen2_properties_typeProperties_url": {
+			"value": "https://azurestorageblob546.dfs.core.windows.net/"
+		},
+		"AzureKeyVault1_properties_typeProperties_baseUrl": {
+			"value": "https://azurekeyvault5476.vault.azure.net/"
+		},
+		"AzureKeyVault_Sql_ConnectionString_properties_typeProperties_baseUrl": {
+			"value": "https://azurekeyvault5476.vault.azure.net/"
+		},
+		"AzureKeyVault_blob_keyVault_LS_properties_typeProperties_baseUrl": {
+			"value": "https://azurekeyvault5476.vault.azure.net/"
+		},
+		"AzureSqlDatabase_LinkedService_KeyVault_Ver1_properties_typeProperties_connectionString_secretName": {
+			"value": "dbsqlconnectionstring"
+		},
+		"Blob_File_Arrival_Trigger_properties_PL_Blob_File_Arrival_parameters_pipFilename": {
+			"value": "@triggerBody().fileName"
+		},
+		"Blob_File_Arrival_Trigger_properties_PL_Blob_File_Arrival_parameters_pipFolderPath": {
+			"value": "@join(skip(split(triggerBody().folderPath, '/'), 1), '/')"
+		},
+		"Blob_File_Arrival_Trigger_properties_PL_Blob_File_Arrival_parameters_pipContainerName": {
+			"value": "@first(split(triggerBody().folderPath, '/'))"
+		},
+		"Blob_File_Arrival_Trigger_properties_typeProperties_scope": {
+			"value": "/subscriptions/22e449be-eb1e-405d-b2bb-4807d304557b/resourceGroups/azurestorageblobrs/providers/Microsoft.Storage/storageAccounts/azurestorageblob546"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}

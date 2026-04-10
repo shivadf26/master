@@ -1,0 +1,119 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "AzureDataFactory25032026"
+		},
+		"AzureDataLakeStorage_Gen2_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage_Gen2'"
+		},
+		"AzureBlobStorage_Binary_Parametrize_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "BlobStorageconnectionStringkeyvault"
+		},
+		"AzureDataLakeStorage_Gen2_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://azurestorageblob546.dfs.core.windows.net/"
+		},
+		"AzureKeyVault1_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://azurekeyvault5476.vault.azure.net/"
+		},
+		"AzureKeyVault_Sql_ConnectionString_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://azurekeyvault5476.vault.azure.net/"
+		},
+		"AzureKeyVault_blob_keyVault_LS_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://azurekeyvault5476.vault.azure.net/"
+		},
+		"AzureSqlDatabase_LinkedService_KeyVault_Ver1_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "dbsqlconnectionstring"
+		},
+		"Blob_File_Arrival_Trigger_properties_PL_Blob_File_Arrival_parameters_pipFilename": {
+			"type": "string",
+			"defaultValue": "@triggerBody().fileName"
+		},
+		"Blob_File_Arrival_Trigger_properties_PL_Blob_File_Arrival_parameters_pipFolderPath": {
+			"type": "string",
+			"defaultValue": "@join(skip(split(triggerBody().folderPath, '/'), 1), '/')"
+		},
+		"Blob_File_Arrival_Trigger_properties_PL_Blob_File_Arrival_parameters_pipContainerName": {
+			"type": "string",
+			"defaultValue": "@first(split(triggerBody().folderPath, '/'))"
+		},
+		"Blob_File_Arrival_Trigger_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/22e449be-eb1e-405d-b2bb-4807d304557b/resourceGroups/azurestorageblobrs/providers/Microsoft.Storage/storageAccounts/azurestorageblob546"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "AzureDataFactory25032026_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AzureDataLakeStorage_Gen2_accountKey": {
+						"value": "[parameters('AzureDataLakeStorage_Gen2_accountKey')]"
+					},
+					"AzureDataLakeStorage_Gen2_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorage_Gen2_properties_typeProperties_url')]"
+					},
+					"AzureKeyVault1_properties_typeProperties_baseUrl": {
+						"value": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
+					},
+					"AzureKeyVault_Sql_ConnectionString_properties_typeProperties_baseUrl": {
+						"value": "[parameters('AzureKeyVault_Sql_ConnectionString_properties_typeProperties_baseUrl')]"
+					},
+					"AzureKeyVault_blob_keyVault_LS_properties_typeProperties_baseUrl": {
+						"value": "[parameters('AzureKeyVault_blob_keyVault_LS_properties_typeProperties_baseUrl')]"
+					},
+					"AzureBlobStorage_Binary_Parametrize_properties_typeProperties_connectionString_secretName": {
+						"value": "[parameters('AzureBlobStorage_Binary_Parametrize_properties_typeProperties_connectionString_secretName')]"
+					},
+					"AzureSqlDatabase_LinkedService_KeyVault_Ver1_properties_typeProperties_connectionString_secretName": {
+						"value": "[parameters('AzureSqlDatabase_LinkedService_KeyVault_Ver1_properties_typeProperties_connectionString_secretName')]"
+					},
+					"Blob_File_Arrival_Trigger_properties_PL_Blob_File_Arrival_parameters_pipFilename": {
+						"value": "[parameters('Blob_File_Arrival_Trigger_properties_PL_Blob_File_Arrival_parameters_pipFilename')]"
+					},
+					"Blob_File_Arrival_Trigger_properties_PL_Blob_File_Arrival_parameters_pipFolderPath": {
+						"value": "[parameters('Blob_File_Arrival_Trigger_properties_PL_Blob_File_Arrival_parameters_pipFolderPath')]"
+					},
+					"Blob_File_Arrival_Trigger_properties_PL_Blob_File_Arrival_parameters_pipContainerName": {
+						"value": "[parameters('Blob_File_Arrival_Trigger_properties_PL_Blob_File_Arrival_parameters_pipContainerName')]"
+					},
+					"Blob_File_Arrival_Trigger_properties_typeProperties_scope": {
+						"value": "[parameters('Blob_File_Arrival_Trigger_properties_typeProperties_scope')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
