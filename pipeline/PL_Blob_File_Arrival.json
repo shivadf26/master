@@ -34,8 +34,8 @@
 						}
 					},
 					"fieldList": [
-						"size",
-						"exists"
+						"exists",
+						"size"
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
@@ -61,7 +61,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@and(activity('Get_Blob_CSV_File_MetaData').output.exists, greater(activity('Get_Blob_CSV_File_MetaData').output.size,1024))",
+						"value": "@greater(activity('Get_Blob_CSV_File_MetaData').output.size,1024)",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
