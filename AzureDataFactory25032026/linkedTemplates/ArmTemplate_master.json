@@ -11,6 +11,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage_Gen2'"
 		},
+		"AzureDatabricks_Shiv_Cluster_ComputeLS_accessToken": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessToken' of 'AzureDatabricks_Shiv_Cluster_ComputeLS'"
+		},
 		"AzureBlobStorage_Binary_Parametrize_properties_typeProperties_connectionString_secretName": {
 			"type": "string",
 			"defaultValue": "BlobStorageconnectionStringkeyvault"
@@ -18,6 +22,10 @@
 		"AzureDataLakeStorage_Gen2_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://azurestorageblob546.dfs.core.windows.net/"
+		},
+		"AzureDatabricks_Shiv_Cluster_ComputeLS_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "0417-194145-4ztag61n"
 		},
 		"AzureKeyVault1_properties_typeProperties_baseUrl": {
 			"type": "string",
@@ -81,8 +89,14 @@
 					"AzureDataLakeStorage_Gen2_accountKey": {
 						"value": "[parameters('AzureDataLakeStorage_Gen2_accountKey')]"
 					},
+					"AzureDatabricks_Shiv_Cluster_ComputeLS_accessToken": {
+						"value": "[parameters('AzureDatabricks_Shiv_Cluster_ComputeLS_accessToken')]"
+					},
 					"AzureDataLakeStorage_Gen2_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage_Gen2_properties_typeProperties_url')]"
+					},
+					"AzureDatabricks_Shiv_Cluster_ComputeLS_properties_typeProperties_existingClusterId": {
+						"value": "[parameters('AzureDatabricks_Shiv_Cluster_ComputeLS_properties_typeProperties_existingClusterId')]"
 					},
 					"AzureKeyVault1_properties_typeProperties_baseUrl": {
 						"value": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"

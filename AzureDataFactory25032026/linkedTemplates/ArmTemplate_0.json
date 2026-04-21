@@ -11,9 +11,17 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage_Gen2'"
 		},
+		"AzureDatabricks_Shiv_Cluster_ComputeLS_accessToken": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessToken' of 'AzureDatabricks_Shiv_Cluster_ComputeLS'"
+		},
 		"AzureDataLakeStorage_Gen2_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://azurestorageblob546.dfs.core.windows.net/"
+		},
+		"AzureDatabricks_Shiv_Cluster_ComputeLS_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "0417-194145-4ztag61n"
 		},
 		"AzureKeyVault1_properties_typeProperties_baseUrl": {
 			"type": "string",
@@ -114,6 +122,24 @@
 						"type": "SecureString",
 						"value": "[parameters('AzureDataLakeStorage_Gen2_accountKey')]"
 					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureDatabricks_Shiv_Cluster_ComputeLS')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDatabricks",
+				"typeProperties": {
+					"domain": "https://adb-7405616979794906.6.azuredatabricks.net",
+					"accessToken": {
+						"type": "SecureString",
+						"value": "[parameters('AzureDatabricks_Shiv_Cluster_ComputeLS_accessToken')]"
+					},
+					"existingClusterId": "[parameters('AzureDatabricks_Shiv_Cluster_ComputeLS_properties_typeProperties_existingClusterId')]"
 				}
 			},
 			"dependsOn": []
@@ -1119,7 +1145,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
-				"runtimeState": "Started",
+				"runtimeState": "Stopped",
 				"pipelines": [
 					{
 						"pipelineReference": {

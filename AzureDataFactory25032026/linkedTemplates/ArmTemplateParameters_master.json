@@ -8,11 +8,17 @@
 		"AzureDataLakeStorage_Gen2_accountKey": {
 			"value": ""
 		},
+		"AzureDatabricks_Shiv_Cluster_ComputeLS_accessToken": {
+			"value": ""
+		},
 		"AzureBlobStorage_Binary_Parametrize_properties_typeProperties_connectionString_secretName": {
 			"value": "BlobStorageconnectionStringkeyvault"
 		},
 		"AzureDataLakeStorage_Gen2_properties_typeProperties_url": {
 			"value": "https://azurestorageblob546.dfs.core.windows.net/"
+		},
+		"AzureDatabricks_Shiv_Cluster_ComputeLS_properties_typeProperties_existingClusterId": {
+			"value": "0417-194145-4ztag61n"
 		},
 		"AzureKeyVault1_properties_typeProperties_baseUrl": {
 			"value": "https://azurekeyvault5476.vault.azure.net/"
